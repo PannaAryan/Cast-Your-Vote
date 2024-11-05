@@ -15,26 +15,32 @@
                 <legend><h1 class="display-5 mb-4 text-center">{{ question.question_text }}</h1></legend>
                 
                 {% if error_message %}
-                    <p class="text-danger font-weight-bold">{{ error_message }}</p>
+                    <div class="alert alert-danger">{{ error_message }}</div>
                 {% endif %}
 
-                
                 <div class="form-group">
                     {% for choice in question.choice_set.all %}
                         <div class="form-check mb-2">
-                            <input type="radio" class="form-check-input" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
-                            <label class="form-check-label" for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label>
+                            <input type="radio" class="form-check-input" name="choice" id="choice{{ choice.id }}" value="{{ choice.id }}" required>
+                            <label class="form-check-label" for="choice{{ choice.id }}">{{ choice.choice_text }}</label>
                         </div>
                     {% endfor %}
                 </div>
+
+                <!-- Optional: Show an error message if the user submits without selecting a choice -->
+                {% if request.method == 'POST' and not request.POST.choice %}
+                    <div class="alert alert-danger">Please select an option before submitting your vote.</div>
+                {% endif %}
             </fieldset>
 
-            
             <div class="text-center mt-4">
                 <button type="submit" class="btn btn-primary">Vote</button>
             </div>
         </form>
+
+        <div class="text-center mt-4">
+            <a href="{% url 'polls:index' %}" class="btn btn-secondary">Back to Polls</a>
+        </div>
     </div>
 </body>
 </html>
-

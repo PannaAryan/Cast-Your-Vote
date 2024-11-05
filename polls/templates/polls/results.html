@@ -3,29 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Polls Question</title>
+    <title>Polls Results</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-light">
 
-   
     <div class="container mt-5">
         <h1 class="display-4 mb-4 text-center">{{ question.question_text }}</h1>
 
-       
         <ul class="list-unstyled">
             {% for choice in question.choice_set.all %}
                 <li class="p-2 mb-3 border rounded bg-white shadow-sm">
-                    <span class="font-weight-bold">{{ choice.choice_text }}</span> 
+                    <span class="font-weight-bold">{{ choice.choice_text }}</span>
                     <span class="text-muted">-- {{ choice.votes }} vote{{ choice.votes|pluralize }}</span>
                 </li>
             {% endfor %}
         </ul>
 
+        <h2 class="mt-4">Voters</h2>
+        <ul class="list-unstyled">
+            {% for voter in voters %}
+                <li class="p-2 mb-3 border rounded bg-white shadow-sm">
+                    <span>{{ voter.username }}</span>
+                </li>
+            {% empty %}
+                <li class="p-2 mb-3 border rounded bg-white shadow-sm">
+                    <span>No voters yet.</span>
+                </li>
+            {% endfor %}
+        </ul>
+
         <div class="text-center mt-4">
-            <a href="{% url 'polls:detail' question.id %}" class="btn btn-primary text-white">Vote again?</a>
+            <a href="{% url 'polls:index' %}" class="btn btn-secondary">Back to Polls</a>
         </div>
     </div>
 </body>
 </html>
-
