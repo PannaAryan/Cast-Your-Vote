@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polls Question</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+    <div class="container mt-5">
+        <form action="{% url 'polls:vote' question.id %}" method="post" class="p-4 border rounded bg-white shadow-sm">
+            {% csrf_token %}
+            <fieldset>
+                <legend><h1 class="display-5 mb-4 text-center">{{ question.question_text }}</h1></legend>
+                
+                {% if error_message %}
+                    <p class="text-danger font-weight-bold">{{ error_message }}</p>
+                {% endif %}
+
+                
+                <div class="form-group">
+                    {% for choice in question.choice_set.all %}
+                        <div class="form-check mb-2">
+                            <input type="radio" class="form-check-input" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
+                            <label class="form-check-label" for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label>
+                        </div>
+                    {% endfor %}
+                </div>
+            </fieldset>
+
+            
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-primary">Vote</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
+
