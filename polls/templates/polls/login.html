@@ -1,0 +1,23 @@
+<!-- polls/templates/polls/login.html -->
+
+<h2>Login</h2>
+<form method="post" action="{% url 'polls:login' %}">  {% csrf_token %}
+
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required><br><br>
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required><br><br>
+
+    <!-- Hidden field to capture 'next' parameter if it exists in the URL -->
+
+
+    <button type="submit">Login</button>
+</form>
+
+{% if form.errors %}
+    <p style="color: red;">{{ form.errors }}</p>
+{% endif %}
+
+<!-- Section for users who don't have an account -->
+<p>Don’t have an account? <a href="{% url 'polls:signup' %}">Sign up here</a>.</p>

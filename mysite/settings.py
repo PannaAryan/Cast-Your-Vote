@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 
+from django.conf.global_settings import LOGOUT_REDIRECT_URL
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -118,6 +120,12 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+
+LOGIN_URL = 'polls:login'  # Redirects to the login page if user is not authenticated
+LOGIN_REDIRECT_URL = 'polls:index'    # Redirects to home after login if no 'next' parameter is provided
+
+LOGOUT_URL = 'polls:login'
+LOGOUT_REDIRECT_URL = 'polls:login'
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 

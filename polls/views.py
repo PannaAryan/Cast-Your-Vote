@@ -8,7 +8,15 @@ from .forms import SignUpForm
 from django.contrib.auth.decorators import login_required
 from .models import Choice, Question, Vote
 from django.contrib.auth.models import User
+from django.contrib.auth.views import LoginView
+from django.urls import reverse_lazy
 
+class CustomLoginView(LoginView):
+    template_name = 'polls/login.html'
+    def get_success_url(self):
+        return reverse_lazy('polls:index')
+
+    # Specify the correct template path
 
 class IndexView(generic.ListView):
     template_name = "polls/index.html"
@@ -53,21 +61,31 @@ def signup_view(request):
 
 @login_required
 def vote(request, question_id):
+    # Fetch the question or return a 404 error if it doesn't exist
     question = get_object_or_404(Question, pk=question_id)
 
-    if request.method == 'POST':
-        choice_id = request.POST.get('choice')
-        choice = get_object_or_404(Choice, pk=choice_id)
+    try:
+        selected_choice = question.choice_set.get(pk=request.POST['choice'])
+    except (KeyError, Choice.DoesNotExist):
+        # If no choice was selected or it doesn't exist, redisplay the voting form with an error message
+        return render(request, 'polls/detail.html', {
+            'question': question,
+            'error_message': "You didn't select a choice.",
+        })
+    else:
+        if request.method == 'POST':
+            choice_id = request.POST.get('choice')
+            choice = get_object_or_404(Choice, pk=choice_id)
 
-        # Check if the user has already voted for any choice in this question
-        if Vote.objects.filter(user=request.user, choice__question=question).exists():
+            # Check if the user has already voted for any choice in this question
+            if Vote.objects.filter(user=request.user, choice__question=question).exists():
+                return redirect('polls:results', pk=question_id)
+
+            # Record the vote
+            Vote.objects.create(user=request.user, choice=choice)
+            choice.votes = F('votes') + 1
+            choice.save(update_fields=['votes'])
+
             return redirect('polls:results', pk=question_id)
 
-        # Record the vote
-        Vote.objects.create(user=request.user, choice=choice)
-        choice.votes = F('votes') + 1
-        choice.save(update_fields=['votes'])
-
-        return redirect('polls:results', pk=question_id)
-
-    return redirect('polls:detail', pk=question_id)
+        return redirect('polls:detail', pk=question_id)
