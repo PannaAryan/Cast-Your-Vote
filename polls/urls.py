@@ -12,8 +12,8 @@ urlpatterns = [
     path("<int:pk>/", views.DetailView.as_view(), name="detail"),
     path("<int:pk>/results/", views.ResultsView.as_view(), name="results"),
     path("<int:question_id>/vote/", views.vote, name="vote"),
-    path('login/', CustomLoginView.as_view(), name='login'),  # Login page,
+    path('login/', CustomLoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
-    path("accounts/signup/", views.signup_view, name="signup"),  # Add this line for signup
+    path("accounts/signup/", views.signup_view, name="signup"),
 ]
 
