@@ -13,8 +13,12 @@ from django.urls import reverse_lazy
 
 class CustomLoginView(LoginView):
     template_name = 'polls/login.html'
+
     def get_success_url(self):
-        return reverse_lazy('polls:index')
+        next_url = self.request.GET.get('next')  # Get the next parameter from URL
+        if next_url:
+            return next_url  # Redirect to the page the user was trying to access
+        return reverse_lazy('polls:index')  # Default to index if no 'next' parameter
 
     # Specify the correct template path
 
@@ -62,6 +66,9 @@ def signup_view(request):
 @login_required
 def vote(request, question_id):
     # Fetch the question or return a 404 error if it doesn't exist
+    if not request.user.is_authenticated:
+        return redirect(f'{reverse("polls:login")}?next={request.path}')
+
     question = get_object_or_404(Question, pk=question_id)
 
     try:

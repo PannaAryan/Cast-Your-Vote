@@ -18,6 +18,14 @@
     </style>
 </head>
 <body>
+
+    <!-- User's name display in the top right corner -->
+    {% if user.is_authenticated %}
+        <div class="user-info">
+            Welcome, {{ user.username }}!
+        </div>
+    {% endif %}
+
     <div class="question-container">
    <ul class="list-group w-60 mx-auto"> <!-- Added w-75 for width and mx-auto to center -->
        {% for question in latest_question_list %}
